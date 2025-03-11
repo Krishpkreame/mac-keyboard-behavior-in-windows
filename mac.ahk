@@ -145,18 +145,6 @@ SetWorkingDir(A_ScriptDir) ; Set the working directory to the script's directory
     return
 }
 
-; --- Google Chrome
-#HotIf WinActive("ahk_exe chrome.exe")
-    ; Opt + W -> Next Tab
-    #w:: {
-        Send("{LCtrl down}{Tab down}{Tab up}{LCtrl up}")
-    }
-    ; Opt + Q -> Previous Tab
-    #q:: {
-        Send("{Ctrl down}{Shift down}{Tab down}{Tab up}{Shift up}{Ctrl up}")
-    }
-#HotIf
-
 ; --- Any Terminal
 ; Ctrl + Key (Xterm input)
 #HotIf WinActive("ahk_exe powershell.exe") or WinActive("ahk_exe cmd.exe") or WinActive("ahk_exe WindowsTerminal.exe")
@@ -218,9 +206,5 @@ HoldToQuit() {
 Ctrl & Tab:: AltTab
 ; Ctrl + Tab -> Ctrl + Tab
 !Tab:: Send("^{Tab}")
-
-; --- Windows 11 Specific
-; Opt + A -> Open Bluetooth Quick Panel
-#a:: Run("ms-actioncenter:controlcenter/bluetooth")
 
 ; Add more hotkeys here, ask ChatGPT or ask on GitHub issues
