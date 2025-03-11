@@ -1,109 +1,226 @@
 ; This script assumes that Alt and Ctrl characters have been swapped using a third-party tool
+; I would recommend SharpKeys (Remaps with Registry, so no app needs to run in the background)
 
-; -----KEY GUIDE-----
-; # Win. (the key with the Windows logo) therefore `Send #e` would hold down Win and then press E.
-; + Shift. For example, `Send, +abC` would send the text "AbC", and `Send, !+a` would press Alt+Shift+A.
-; ^ Alt (because of remapkey). For example, `Send, This is text!a` would send the keys "This is text" and then press Alt+A. Note: !A produces a different effect in some programs than !a. This is because !A presses Alt+Shift+A and !a presses Alt+A. If in doubt, use lowercase.
-; ! Ctrl (because of remapkey). For example, `Send, ^!a` would press Ctrl+Alt+A, and Send, ^{Home} would send Ctrl+Home. Note: ^A produces a different effect in some programs than ^a. This is because ^A presses Ctrl+Shift+A and ^a presses Ctrl+A. If in doubt, use lowercase.Sends Ctrl. For example, Send, ^!a would press Ctrl+Alt+A, and Send, ^{Home} would send Ctrl+Home. Note: ^A produces a different effect in some programs than ^a. This is because ^A presses Ctrl+Shift+A and ^a presses Ctrl+A. If in doubt, use lowercase.
-; & An ampersand may be used between any two keys or mouse buttons to combine them into a custom hotkey.
+; NOTE: Because Alt and Ctrl keys are swapped, the script uses the following key mappings:
+; -----KEY GUIDE (Win - Mac)-----
+; # -> Windows Key - Option key
+; + -> Shift - Shift
+; ^ -> Alt - Command
+; ! -> Ctrl - Control
+; & Any two keys to combine into custom hotkey.
 
-; #Warn  ; Uncomment to enable warnings to assist with detecting common errors.
-SendMode("Input")  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir(A_ScriptDir)  ; Ensures a consistent starting directory.
+; -----MISC-----
+SendMode("Input") ; Send input directly to the active window
+SetWorkingDir(A_ScriptDir) ; Set the working directory to the script's directory
 
-; Uncomment for key history
-; #InstallKeybdHook
-; KeyHistory
-
-; App and tab switching
-Ctrl & Tab::AltTab
-!Tab::Send("^{Tab}")
-
-; Quit the active app
-^q::Send("!{f4}")
-
-; Insertion point movement
-^Left::
-{
+; --- Command + Arrow Keys
+; Move to the start of line
+^Left:: {
     Suspend(true)
     Send("{Home}")
     Suspend(false)
     return
 }
-^Right::
-{
+; Move to the end of line
+^Right:: {
     Suspend(true)
     Send("{End}")
     Suspend(false)
     return
 }
-^Up::
-{
+; Move to the start of document
+^Up:: {
     Suspend(true)
     Send("^{Home}")
     Suspend(false)
     return
 }
-^Down::
-{
+; Move to the end of document
+^Down:: {
     Suspend(true)
     Send("^{End}")
     Suspend(false)
     return
 }
-+^Left::
-{
+
+; --- Command + Shift + Arrow Keys
+; Select to the start of line
++^Left:: {
     Suspend(true)
     Send("+{Home}")
     Suspend(false)
     return
 }
-+^Right::
-{
+; Select to the end of line
++^Right:: {
     Suspend(true)
     Send("+{End}")
     Suspend(false)
     return
 }
-+^Up::
-{
+; Select to the start of document
++^Up:: {
     Suspend(true)
     Send("+^{Home}")
     Suspend(false)
     return
 }
-+^Down::
-{
+; Select to the end of document
++^Down:: {
     Suspend(true)
     Send("+^{End}")
     Suspend(false)
     return
 }
-#Left::
-{
-    Suspend(true)
+
+; --- Option + Arrow Keys
+; Move to the start of word
+#Left:: {
     Send("^{Left}")
-    Suspend(false)
+    Sleep 60
     return
 }
-#Right::
-{
-    Suspend(true)
+; Move to the end of word
+#Right:: {
     Send("^{Right}")
-    Suspend(false)
+    Sleep 60
     return
 }
-+#Left::
-{
-    Suspend(true)
+; Alt + Up (Move line up)
+#Up:: {
+    Send("!{Up}")
+    Sleep 60
+    return
+}
+; Alt + Down (Move line down)
+#Down:: {
+    Send("!{Down}")
+    Sleep 60
+    return
+}
+
+; --- Option + Shift + Arrow Keys
+; Select to the start of word
++#Left:: {
     Send("+^{Left}")
-    Suspend(false)
+    Sleep 60
     return
 }
-+#Right::
-{
-    Suspend(true)
+; Select to the end of word
++#Right:: {
     Send("+^{Right}")
+    Sleep 60
+    return
+}
+; Duplicate line up
++#Up:: {
+    Send("+!{Up}")
+    Sleep 60
+    return
+}
+; Duplicate line down
++#Down:: {
+    Send("+!{Down}")
+    Sleep 60
+    return
+}
+
+; --- Command + Backspace
+; Delete to the start of line
+^Backspace:: {
+    Suspend(true)
+    Send("+{Home}")
+    Send("{Backspace}")
     Suspend(false)
     return
 }
+
+; --- Option + Backspace
+; Delete to the start of word
+#Backspace:: {
+    Suspend(true)
+    Send("^{Backspace}")
+    Sleep 20
+    Suspend(false)
+    return
+}
+
+; --- Google Chrome
+#HotIf WinActive("ahk_exe chrome.exe")
+    ; Opt + W -> Next Tab
+    #w:: {
+        Send("{LCtrl down}{Tab down}{Tab up}{LCtrl up}")
+    }
+    ; Opt + Q -> Previous Tab
+    #q:: {
+        Send("{Ctrl down}{Shift down}{Tab down}{Tab up}{Shift up}{Ctrl up}")
+    }
+#HotIf
+
+; --- Any Terminal
+; Ctrl + Key (Xterm input)
+#HotIf WinActive("ahk_exe powershell.exe") or WinActive("ahk_exe cmd.exe") or WinActive("ahk_exe WindowsTerminal.exe")
+    !a:: Send("^a")
+    !b:: Send("^b")
+    !c:: Send("^c")
+    !d:: Send("^d")
+    !e:: Send("^e")
+    !f:: Send("^f")
+    !g:: Send("^g")
+    !h:: Send("^h")
+    !i:: Send("^i")
+    !j:: Send("^j")
+    !k:: Send("^k")
+    !l:: Send("^l")
+    !m:: Send("^m")
+    !n:: Send("^n")
+    !o:: Send("^o")
+    !p:: Send("^p")
+    !q:: Send("^q")
+    !r:: Send("^r")
+    !s:: Send("^s")
+    !t:: Send("^t")
+    !u:: Send("^u")
+    !v:: Send("^v")
+    !w:: Send("^w")
+    !x:: Send("^x")
+    !y:: Send("^y")
+    !z:: Send("^z")
+
+    !1:: Send("^1")
+    !2:: Send("^2")
+    !3:: Send("^3")
+    !4:: Send("^4")
+    !5:: Send("^5")
+    !6:: Send("^6")
+    !7:: Send("^7")
+    !8:: Send("^8")
+    !9:: Send("^9")
+    !0:: Send("^0")
+#HotIf
+
+; --- All Apps
+; Command + Q -> Hold to Quit
+^q::HoldToQuit()
+HoldToQuit() {
+    StartTime := A_TickCount
+    ; Wait for 600ms
+    While (A_TickCount - StartTime < 600) {
+        if (!GetKeyState("q", "P") || !GetKeyState("Ctrl", "P"))
+            return
+        Sleep(4)
+    }
+    ; Send Alt + F4 Command
+    Send("!{f4}")
+    return
+}
+; Command + Tab -> Alt + Tab
+Ctrl & Tab:: AltTab
+; Ctrl + Tab -> Ctrl + Tab
+!Tab:: Send("^{Tab}")
+
+; --- Windows 11 Specific
+; Opt + A -> Open Bluetooth Quick Panel
+#a:: Run("ms-actioncenter:controlcenter/bluetooth")
+
+; Add more hotkeys here, ask ChatGPT or ask on GitHub issues
